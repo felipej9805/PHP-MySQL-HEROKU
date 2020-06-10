@@ -21,7 +21,7 @@ echo "Éxito: Se realizó una conexión apropiada a MySQL!" . PHP_EOL;
 echo "<br>";
 
 //Receive the RAW post data.
-$content = trim(file_get_contents("data.json"));
+$content = trim(file_get_contents("php://input"));
 
 //Attempt to decode the incoming RAW post data from JSON.
 $decoded = json_decode($content, true);
