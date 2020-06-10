@@ -1,11 +1,8 @@
 <?php
 
 //include "conexion-local.php";  // Connection to Data base information LOCAL
-//include "conexion-cloud.php";  // Connection to Data base information CLOUD
-$host = "localhost";
-$user = "root";
-$pass = "password";
-$db = "prueba";
+include "conexion-cloud.php";  // Connection to Data base information CLOUD
+
 
 //Crea la conexion con el SERVIDOR DE LA BASE DE DATOS
 $enlace = mysqli_connect($host, $user, $pass, $db);
@@ -21,7 +18,7 @@ echo "Éxito: Se realizó una conexión apropiada a MySQL!" . PHP_EOL;
 echo "<br>";
 
 //Receive the RAW post data.
-$content = trim(file_get_contents("data.json"));
+$content = trim(file_get_contents("data-prueba.json"));
 
 //Attempt to decode the incoming RAW post data from JSON.
 $decoded = json_decode($content, true);
@@ -40,40 +37,44 @@ $latitude =  $decoded['payload_fields']['latitude_gps'];
 $longitude = $decoded['payload_fields']['longitude_gps'];
 $data_rate = $decoded['metadata']['data_rate'];
 
+$id = $decoded['id'];
+$latitud = $decoded['latitud'];
+$longitud = $decoded['longitud'];
+//id. longitud y latitud
 
-$sqlinsert = "INSERT INTO tablita (id, latitud, longitud) VALUES ('1', '2.222222', '3.33333333')";
+$sqlinsert = "INSERT INTO tablita (id, latitud, longitud) VALUES ('$id', '$latitud', '$longitud')";
 
 if ($enlace->query($sqlinsert) === TRUE) {
-  echo "New record created successfully";
+   echo "New record created successfully";
 } else {
-  echo "Error: " . $sql . "<br>" . $conn->error;
+   echo "Error: " . $sql . "<br>" . $conn->error;
 }
 
 
 $sql = "SELECT * FROM tablita";
-if($result = mysqli_query($enlace, $sql)){
-    if(mysqli_num_rows($result) > 0){
-        echo "<table width='100%' border='2px solid black' border-collapse: collapse>";
-            echo "<tr>";
-                echo "<th>id</th>";
-                echo "<th>latitud</th>";
-                echo "<th>longitud</th>";
-            echo "</tr>";
-        while($row = mysqli_fetch_array($result)){
-            echo "<tr>";
-                echo "<td>" . $row['id'] . "</td>";
-                echo "<td>" . $row['latitud'] . "</td>";
-                echo "<td>" . $row['longitud'] . "</td>";
-            echo "</tr>";
-        }
-        echo "</table>";
-        // Free result set
-        mysqli_free_result($result);
-    } else{
-        echo "No records matching your query were found.";
-    }
-} else{
-    echo "ERROR: Could not able to execute $sql. " . mysqli_error($link);
+if ($result = mysqli_query($enlace, $sql)) {
+   if (mysqli_num_rows($result) > 0) {
+      echo "<table width='100%' border='2px solid black' border-collapse: collapse>";
+      echo "<tr>";
+      echo "<th>id</th>";
+      echo "<th>latitud</th>";
+      echo "<th>longitud</th>";
+      echo "</tr>";
+      while ($row = mysqli_fetch_array($result)) {
+         echo "<tr>";
+         echo "<td>" . $row['id'] . "</td>";
+         echo "<td>" . $row['latitud'] . "</td>";
+         echo "<td>" . $row['longitud'] . "</td>";
+         echo "</tr>";
+      }
+      echo "</table>";
+      // Free result set
+      mysqli_free_result($result);
+   } else {
+      echo "No records matching your query were found.";
+   }
+} else {
+   echo "ERROR: Could not able to execute $sql. " . mysqli_error($link);
 }
 
   // $sql1 = "INSERT into LoRaWAN_messages (dev_id, date, hour, hw_serial, latitude, longitude, data_rate) 
